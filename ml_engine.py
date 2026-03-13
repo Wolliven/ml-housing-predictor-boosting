@@ -35,21 +35,13 @@ def load_dataset(data_csv : str) -> tuple[pd.DataFrame, pd.Series]:
     return X, y
 
 def build_models(random_state: int = 42, tree_depth : int=5) -> dict:
-    model_tree = DecisionTreeRegressor(
+    model_boost = DecisionTreeRegressor(
         max_depth=tree_depth,
         random_state=random_state
     )
 
-    model_forest = RandomForestRegressor(
-        n_estimators=100,
-        max_depth=10,
-        random_state=random_state,
-        n_jobs=-1
-    )
-
     return {
-        "decision_tree": model_tree,
-        "random_forest": model_forest,
+        "gradient_boosting": model_boost,
     }
 
 def train_model(data_csv : str, model_path : str = "model.pkl") -> dict:
@@ -62,43 +54,25 @@ def train_model(data_csv : str, model_path : str = "model.pkl") -> dict:
     
     X, y = load_dataset(data_csv)
     #X = add_features(X)
-    model_tree, model_forest = build_models().values()
+    model_boost = build_models().values()
 
-    scores_tree = cross_val_score(model_tree, X, y, cv=5, scoring="r2")
-    scores_forest = cross_val_score(model_forest, X, y, cv=5, scoring="r2")
-    mean_tree = scores_tree.mean()
-    std_tree = scores_tree.std()
-    mean_forest = scores_forest.mean()
-    std_forest = scores_forest.std()
+    scores_boost = cross_val_score(model_boost, X, y, cv=5, scoring="r2")
+    mean_boost = scores_boost.mean()
+    std_boost = scores_boost.std()
 
-    improvement = mean_forest - mean_tree
-    threshold = 0.5 * (std_tree / (5 ** 0.5) + std_forest / (5 ** 0.5))
-    if improvement < -threshold:
-        selection = "tree"
-        model = model_tree
-        
-    elif improvement > threshold:
-        selection = "forest"
-        model = model_forest
-    else:
-        selection = "close"
-        model = model_tree
+    model = model_boost
+    selection = "boost"
 
     model.fit(X, y)
 
-    tree = {
-        "mean" : mean_tree,
-        "std" : std_tree
-    }
-    forest = {
-        "mean" : mean_forest,
-        "std" : std_forest,
+    boost = {
+        "mean" : mean_boost,
+        "std" : std_boost
     }
     result = {
         "selection" : selection,
         "model" : model,
-        "tree" : tree,
-        "forest" : forest,
+        "boost" : boost,
         "data" : data_csv,
         "model_path" : model_path,
         "features" : X.columns.tolist()

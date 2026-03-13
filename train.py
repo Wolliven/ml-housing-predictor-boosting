@@ -1,7 +1,7 @@
 """
 Entrypoint for training the model.
 This script loads a dataset from a CSV file, preprocesses the data,
-trains a regression model, evaluates its performance, and saves
+trains a gradient boosting regression model, evaluates its performance, and saves
 the trained model to disk.
 """
 import sys
@@ -18,17 +18,9 @@ def main() -> None:
     args = parser.parse_args()
 
     result = train_model(args.data_csv, model_path=args.model_path)
-    print(f"Decision Tree Results:")
-    print(f"Mean R² score: {result['tree']['mean']:.4f}±{result['tree']['std']:.4f}")
-    print(f"Random Forest Results:")
-    print(f"Mean R² score: {result['forest']['mean']:.4f}±{result['forest']['std']:.4f}")
-    if result['selection'] == "close":
-        print("The cross-validation results are very close, so the simpler model (Decision Tree) will be selected.")
-    elif result['selection'] == "forest":
-        print("Random Forest was selected based on cross-validation performance.")
-    else:
-        print("Decision Tree was selected based on cross-validation performance.")
     print(f"Training model with the following dataset: {result['data']}")
+    print(f"Gradient Boosting Results:")
+    print(f"Mean R² score: {result['boost']['mean']:.4f}±{result['boost']['std']:.4f}")
     print(f"Model saved to {result['model_path']}")
 
 if __name__ == "__main__":
