@@ -8,17 +8,10 @@ import json
 import logging
 from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
 import pickle as pkl
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
-
-def add_features(X : pd.DataFrame) -> pd.DataFrame:
-    X["households"] = X["Population"] / X["AveOccup"]
-    X["people_per_bedroom"] = X["AveOccup"] / X["AveBedrms"]
-    X["bedrooms_per_room"] = X["AveBedrms"] / X["AveRooms"]
-    return X
 
 def load_dataset(data_csv : str) -> tuple[pd.DataFrame, pd.Series]:
     df = pd.read_csv(data_csv)
@@ -53,8 +46,7 @@ def train_model(data_csv : str, model_path : str = "model.pkl") -> dict:
         raise ValueError("Invalid model file format. Please provide a .pkl file.")
     
     X, y = load_dataset(data_csv)
-    #X = add_features(X)
-    model_boost = build_models().values()
+    model_boost = build_models().get("gradient_boosting")
 
     scores_boost = cross_val_score(model_boost, X, y, cv=5, scoring="r2")
     mean_boost = scores_boost.mean()
@@ -98,7 +90,6 @@ def predict(input_data : str, model_path : str = None, output_path : str = None)
 
     if input_data.endswith(".csv"):
         df = pd.read_csv(input_data)
-        df = add_features(df)
     else:
         with open(input_data, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -109,7 +100,6 @@ def predict(input_data : str, model_path : str = None, output_path : str = None)
             df = pd.DataFrame(data)
         else:
             raise ValueError("Invalid JSON format. Please provide a JSON object or an array of JSON objects.")
-        df = add_features(df)
 
     missing_rows = df.isna().any(axis=1).sum()
     if missing_rows > 0:
