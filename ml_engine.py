@@ -6,8 +6,9 @@ The `predict` function loads a trained model, takes input data in JSON or CSV fo
 """
 import json
 import logging
+import pandas
 from sklearn.model_selection import cross_val_score
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 import pandas as pd
 import pickle as pkl
 
@@ -27,15 +28,14 @@ def load_dataset(data_csv : str) -> tuple[pd.DataFrame, pd.Series]:
     y = df["MedHouseVal"]
     return X, y
 
-def build_models(random_state: int = 42, tree_depth : int=5) -> dict:
-    model_boost = DecisionTreeRegressor(
-        max_depth=tree_depth,
+def build_boost(random_state: int = 42, max_depth : int=5, n_estimators : int=100, learning_rate : float=0.1) -> dict:
+    model_boost = GradientBoostingRegressor(
+        max_depth=max_depth,
+        n_estimators=n_estimators,
+        learning_rate=learning_rate,
         random_state=random_state
     )
-
-    return {
-        "gradient_boosting": model_boost,
-    }
+    return model_boost
 
 def train_model(data_csv : str, model_path : str = "model.pkl") -> dict:
     if not model_path:
@@ -46,7 +46,7 @@ def train_model(data_csv : str, model_path : str = "model.pkl") -> dict:
         raise ValueError("Invalid model file format. Please provide a .pkl file.")
     
     X, y = load_dataset(data_csv)
-    model_boost = build_models().get("gradient_boosting")
+    model_boost = build_boost()
 
     scores_boost = cross_val_score(model_boost, X, y, cv=5, scoring="r2")
     mean_boost = scores_boost.mean()

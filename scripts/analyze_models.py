@@ -16,12 +16,12 @@ from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 import pandas as pd
 import matplotlib.pyplot as plt
 import pickle as pkl
-from ml_engine import load_dataset, build_models, add_features
+from ml_engine import load_dataset, build_boost
 from sklearn.tree import plot_tree
 
 #Baseline model evaluation using cross-validation predictions
 X, y = load_dataset("data/california_housing.csv")
-model_boost = build_models().get("gradient_boosting")
+model_boost = build_boost()
 
 def analyze_models(X : pd.DataFrame, y : pd.Series, model_boost) -> None:
     pred_boost = cross_val_predict(model_boost, X, y, cv=5)
