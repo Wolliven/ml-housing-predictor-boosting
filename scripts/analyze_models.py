@@ -66,4 +66,21 @@ def learning_rate_experiment(X : pd.DataFrame, y : pd.Series) -> None:
     for lr, mean_boost, std_boost, rmse_boost in results:
         print(f"{lr:<14} | {mean_boost:.4f} | {std_boost:.4f} | {rmse_boost:.4f}")
 
-learning_rate_experiment(X, y)
+
+#n_estimators experiment with table of results
+def n_estimators_experiment(X : pd.DataFrame, y : pd.Series) -> None:
+    n_estimators_list = [50, 100, 200, 300, 400, 500]
+    results = []
+    for n in n_estimators_list:
+        model_boost = build_boost(n_estimators=n, learning_rate=0.05)
+        scores_boost = cross_val_score(model_boost, X, y, cv=5, scoring="r2")
+        mean_boost = scores_boost.mean()
+        rmse_boost = sqrt(mean_squared_error(y, cross_val_predict(model_boost, X, y, cv=5)))
+        std_boost = scores_boost.std()
+        results.append((n, mean_boost, std_boost, rmse_boost))
+    print("N Estimators Experiment Results:")
+    print("N Estimators | Mean R² | Std R² | RMSE")
+    for n, mean_boost, std_boost, rmse_boost in results:
+        print(f"{n:<13} | {mean_boost:.4f} | {std_boost:.4f} | {rmse_boost:.4f}")
+
+n_estimators_experiment(X, y)
