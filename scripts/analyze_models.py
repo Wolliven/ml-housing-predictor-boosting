@@ -49,3 +49,21 @@ def analyze_models(X : pd.DataFrame, y : pd.Series, model_boost) -> None:
 
 #Baseline model evaluation
 #analyze_models(X, y, model_boost)
+
+#learning rate experiment with table of results
+def learning_rate_experiment(X : pd.DataFrame, y : pd.Series) -> None:
+    learning_rates = [0.01, 0.05, 0.1, 0.2, 0.3, 0.4]
+    results = []
+    for lr in learning_rates:
+        model_boost = build_boost(learning_rate=lr)
+        scores_boost = cross_val_score(model_boost, X, y, cv=5, scoring="r2")
+        mean_boost = scores_boost.mean()
+        rmse_boost = sqrt(mean_squared_error(y, cross_val_predict(model_boost, X, y, cv=5)))
+        std_boost = scores_boost.std()
+        results.append((lr, mean_boost, std_boost, rmse_boost))
+    print("Learning Rate Experiment Results:")
+    print("Learning Rate | Mean R² | Std R² | RMSE")
+    for lr, mean_boost, std_boost, rmse_boost in results:
+        print(f"{lr:<14} | {mean_boost:.4f} | {std_boost:.4f} | {rmse_boost:.4f}")
+
+learning_rate_experiment(X, y)
