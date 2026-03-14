@@ -59,7 +59,7 @@ Further experiments will analyze how boosting hyperparameters affect model behav
 
 To study how the **learning rate** influences boosting performance, multiple models were trained while varying the `learning_rate` parameter.
 
-Each configuration was evaluated using **5-fold cross-validation**, recording the mean R² score and standard deviation across folds. The model features are as following:
+Each configuration was evaluated using **5-fold cross-validation**, recording the mean R² score, standard deviation and mean squared error across folds. The model features are as following:
 
 * Max depth: 5
 * N estimators: 100
@@ -103,8 +103,6 @@ These results suggest that the interaction between **learning rate and number of
 
 # 4. Number of Estimators Experiment
 
-*(to be completed after experiment)*
-
 This experiment will analyze how increasing the number of boosting iterations affects model performance.
 
 Key questions include:
@@ -112,6 +110,48 @@ Key questions include:
 * How performance evolves as more trees are added
 * Whether performance reaches a plateau
 * Whether too many estimators lead to overfitting
+
+Each configuration was evaluated using **5-fold cross-validation**, recording the mean R² score, standard deviation and mean squared error across folds. The model features are as following:
+
+* Max depth: 5
+* Learning rate: 0.05
+
+The learning rate of **0.05** was selected because of it's close performance to the highest performing rate, prioritizing lower rates and model stability.
+
+### Results
+
+| N Estimators | Mean R² | Std R² | RMSE   |
+| ------------ | ------- | ------ | ------ |
+| 50           | 0.6229  | 0.0557 | 0.6852 |
+| 100          | 0.6640  | 0.0554 | 0.6464 |
+| 200          | 0.6453  | 0.1014 | 0.6621 |
+| 300          | 0.6525  | 0.0943 | 0.6553 |
+| 400          | 0.6529  | 0.0937 | 0.6550 |
+| 500          | 0.6525  | 0.0939 | 0.6556 |
+
+### Observations
+
+The results show a clear pattern in how boosting performance evolves as more trees are added to the ensemble.
+
+Performance improves significantly when increasing the number of estimators from **50 to 100**, indicating that the model initially benefits from additional boosting iterations as it continues correcting residual errors.
+
+Beyond **100 estimators**, performance stops improving and begins to plateau. Increasing the ensemble size further does not produce meaningful gains in predictive accuracy.
+
+At the same time, the **variance across cross-validation folds increases noticeably** once the number of estimators exceeds 100. The standard deviation nearly doubles compared to the baseline configuration.
+
+This behavior suggests that while additional trees increase the flexibility of the model, they also make the model more sensitive to variations in the training data.
+
+### Interpretation
+
+This experiment illustrates an important characteristic of boosting models.
+
+During the early boosting iterations, each additional tree helps reduce prediction errors by learning from the residuals of the previous model. This leads to steady improvements in performance.
+
+However, once the ensemble becomes sufficiently large, most of the useful structure in the dataset has already been captured. Adding more trees provides diminishing returns and may start fitting noise in the training folds rather than meaningful patterns.
+
+This results in a **performance plateau and increased variance**, indicating that the model is beginning to approach the limits of useful complexity for this dataset.
+
+For the chosen learning rate (`learning_rate = 0.05`), the results suggest that **around 100 estimators provides a good balance between model capacity and generalization performance**.
 
 ---
 
