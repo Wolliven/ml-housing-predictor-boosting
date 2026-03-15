@@ -157,15 +157,48 @@ For the chosen learning rate (`learning_rate = 0.05`), the results suggest that 
 
 # 5. Weak Learner Complexity
 
-*(to be completed after experiment)*
+To study how the complexity of individual trees affects boosting performance, the maximum depth of the trees used by the Gradient Boosting model was varied.
 
-This section will investigate how the complexity of individual trees influences the behavior of the boosting ensemble.
+Boosting algorithms typically rely on **weak learners**, meaning relatively shallow trees that capture only simple patterns. By adjusting `max_depth`, this experiment explores how increasing the strength of individual trees influences the behavior of the ensemble.
 
-Possible parameters to study include:
+All configurations were evaluated using **5-fold cross-validation**, while keeping the other hyperparameters fixed:
 
-* `max_depth`
-* `min_samples_split`
-* `min_samples_leaf`
+* `learning_rate = 0.05`
+* `n_estimators = 100`
+
+
+### Results
+
+| Max Depth | Mean R² | Std R² | RMSE   |
+| --------- | ------- | ------ | ------ |
+| 1         | 0.4670  | 0.0614 | 0.8154 |
+| 2         | 0.5734  | 0.0476 | 0.7300 |
+| 3         | 0.6368  | 0.0471 | 0.6733 |
+| 4         | 0.6587  | 0.0431 | 0.6525 |
+| 5         | 0.6640  | 0.0554 | 0.6464 |
+| 6         | 0.6773  | 0.0531 | 0.6337 |
+
+### Observations
+
+The results show a clear relationship between **tree depth and model performance**.
+
+Very shallow trees such as **depth 1** perform poorly, explaining less than half of the variance in housing prices. These trees are too simple to capture meaningful relationships in the dataset, resulting in strong **underfitting**.
+
+As the tree depth increases, performance steadily improves. Deeper trees allow each boosting iteration to capture more complex interactions between features, which helps the model correct residual errors more effectively.
+
+Performance continues improving through depths **3–6**, indicating that slightly stronger learners provide meaningful improvements in predictive power for this dataset.
+
+The standard deviation across folds remains relatively stable throughout the experiment, suggesting that increasing tree depth does not dramatically increase instability within the tested range.
+
+### Interpretation
+
+This experiment highlights an important characteristic of boosting models.
+
+While boosting is often described as combining many **weak learners**, the definition of “weak” does not necessarily mean extremely shallow trees. Instead, it refers to learners that are simple enough to avoid memorizing the training data too quickly while still capturing useful patterns.
+
+In this dataset, deeper trees allow each boosting iteration to model more complex relationships, which improves predictive performance. However, excessively deep trees could eventually lead to overfitting, since each individual learner would begin modeling highly specific patterns in the training data.
+
+The results suggest that a **moderate tree depth (around 4–6)** provides a good balance between model expressiveness and stability for this problem.
 
 ---
 
