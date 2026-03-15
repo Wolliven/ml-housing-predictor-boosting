@@ -260,23 +260,41 @@ These findings are consistent with the patterns observed in earlier experiments,
 
 # 7. Discussion
 
-*(to be completed after all experiments)*
+The experiments in this project explored how Gradient Boosting models behave and how their main hyperparameters influence performance on the California Housing dataset.
 
-This section will summarize the overall behavior of boosting models and compare them with the tree-based ensemble methods studied previously.
+The baseline results showed that Gradient Boosting achieves predictive performance comparable to the Random Forest model from the previous project, explaining roughly **67% of the variance in housing prices**. This indicates that both ensemble approaches are effective at capturing non-linear relationships and feature interactions present in the dataset.
+
+The **learning rate experiment** demonstrated how the step size of the boosting updates influences model behavior. Extremely small learning rates led to underfitting, while moderate values produced stronger performance. Larger learning rates allowed the model to converge more quickly but also introduced greater instability across cross-validation folds.
+
+The **number of estimators experiment** illustrated how boosting improves performance gradually as trees are added. Initially, additional estimators significantly improved predictive accuracy as the model corrected residual errors. However, beyond roughly **100 estimators**, performance plateaued and variance increased, indicating diminishing returns and increased sensitivity to training data variations.
+
+The **weak learner complexity experiment** showed how the depth of individual trees affects the ensemble. Very shallow trees produced underfitting, while deeper trees allowed the model to capture more complex relationships. Within the tested range, performance improved steadily as tree depth increased, suggesting that moderately expressive learners can be beneficial for this dataset.
+
+Finally, the **feature importance analysis** confirmed that **median income (`MedInc`) is by far the dominant predictor of housing prices**, with geographic variables and household occupancy providing secondary signals. These findings were consistent with the patterns observed in both the decision tree visualization and the Random Forest model from the previous project.
+
+Overall, the experiments highlight how boosting builds predictive power through **sequential error correction**, gradually refining predictions as more trees are added to the model.
 
 ---
 
 # 8. Key Takeaways
 
-*(to be completed after experiments)*
+* Gradient Boosting achieves predictive performance comparable to Random Forest on the California Housing dataset, explaining roughly **67% of the variance in housing prices**.
+* The **learning rate** controls how aggressively the model updates predictions and must be balanced with the number of estimators.
+* Increasing the **number of estimators** initially improves performance but eventually leads to diminishing returns and higher variance.
+* The complexity of individual trees influences how effectively the ensemble captures relationships in the data.
+* **Median income (`MedInc`) is the dominant predictor** of housing prices, with geographic location and household occupancy providing additional predictive signal.
+* Boosting improves predictions by **sequentially correcting residual errors**, rather than averaging independent models as in Random Forest.
 
 ---
 
 # 9. Next Steps
 
-Further experiments will explore:
+Further work could extend this analysis in several directions:
 
-* The relationship between **learning rate and number of estimators**
-* The impact of **weak learner complexity**
-* Feature importance differences between boosting and Random Forest
-* Additional analysis of prediction errors and residuals
+* Investigate additional boosting hyperparameters such as `min_samples_leaf`, `min_samples_split`, and `subsample`.
+* Study the interaction between **learning rate and number of estimators**, which is one of the most important tuning relationships in boosting models.
+* Analyze **residual errors** to better understand where the model struggles to make accurate predictions.
+* Compare Gradient Boosting with more optimized implementations such as **XGBoost, LightGBM, or CatBoost**, which are commonly used in real-world machine learning systems.
+* Explore whether additional **feature engineering** or transformations could improve predictive performance.
+
+These extensions would help deepen the understanding of boosting methods and their practical applications in tabular machine learning problems.
