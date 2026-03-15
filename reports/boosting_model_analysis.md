@@ -202,13 +202,59 @@ The results suggest that a **moderate tree depth (around 4–6)** provides a goo
 
 ---
 
-# 6. Feature Importance
+Great — these plots are clean and the results are exactly what we’d expect. Let’s turn them into the **Feature Importance section of the report**, consistent with the previous ones.
 
-*(to be completed after analysis)*
+---
 
-Feature importance scores will be extracted from the trained Gradient Boosting model in order to understand which variables contribute most to housing price predictions.
+# 6. Feature Importance Analysis
 
-These results will also be compared with the Random Forest feature importance from the previous project.
+To better understand which variables drive the predictions of the Gradient Boosting model, feature importance scores were extracted from the trained model.
+
+Feature importance measures how much each variable contributes to reducing prediction error across the trees in the ensemble. Features that produce larger reductions in error during tree splits receive higher importance scores.
+
+The model used for this analysis was trained with the same configuration used in the previous experiments:
+
+* `learning_rate = 0.05`
+* `n_estimators = 100`
+* `max_depth = 5`
+
+### Gradient Boosting Feature Importance
+
+The importance scores obtained from the trained model are shown below.
+
+| Feature    | Importance |
+| ---------- | ---------- |
+| MedInc     | 0.572      |
+| AveOccup   | 0.131      |
+| Longitude  | 0.108      |
+| Latitude   | 0.102      |
+| HouseAge   | 0.042      |
+| AveRooms   | 0.026      |
+| AveBedrms  | 0.010      |
+| Population | 0.009      |
+
+### Observations
+
+The results show that **median income (`MedInc`) overwhelmingly dominates the prediction process**, accounting for more than half of the model's total importance.
+
+This confirms the pattern already observed in the previous project, where `MedInc` appeared as the root split in the decision tree visualization. Income level appears to be the primary driver of housing price variation in the dataset.
+
+The second most influential feature is **average household occupancy (`AveOccup`)**, suggesting that population density characteristics provide additional predictive information about housing prices.
+
+Geographic variables — **longitude and latitude** — also contribute significantly to the model. This indicates that location plays an important role in determining housing prices, which is expected in real estate markets.
+
+Other variables such as **house age, average rooms, average bedrooms, and population** have smaller contributions. These features still provide useful signals but play a secondary role compared with income and location.
+
+
+### Interpretation
+
+The distribution of feature importance suggests that the model primarily relies on **economic and geographic factors** to estimate housing prices.
+
+Median income acts as the dominant signal, effectively segmenting the dataset into different socioeconomic groups. Geographic coordinates further refine predictions by capturing regional differences in housing markets across California.
+
+Demographic and housing structure variables contribute additional context but have much smaller influence on the overall prediction process.
+
+These findings are consistent with the patterns observed in earlier experiments, reinforcing the conclusion that **income level and location are the strongest predictors of housing prices in this dataset**.
 
 ---
 
