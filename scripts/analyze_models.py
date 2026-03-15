@@ -15,9 +15,7 @@ from sklearn.model_selection import cross_val_predict, cross_val_score
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 import pandas as pd
 import matplotlib.pyplot as plt
-import pickle as pkl
 from ml_engine import load_dataset, build_boost
-from sklearn.tree import plot_tree
 
 #Baseline model evaluation using cross-validation predictions
 X, y = load_dataset("data/california_housing.csv")
@@ -117,4 +115,4 @@ def feature_importance_analysis(X : pd.DataFrame, y : pd.Series) -> None:
     plt.savefig("reports/boosting_feature_importance.png", dpi=300)
     plt.show()
 
-feature_importance_analysis(X, y)
+#feature_importance_analysis(X, y)

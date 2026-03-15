@@ -6,7 +6,6 @@ The `predict` function loads a trained model, takes input data in JSON or CSV fo
 """
 import json
 import logging
-import pandas
 from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import GradientBoostingRegressor
 import pandas as pd
