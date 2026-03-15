@@ -101,4 +101,20 @@ def weak_learner_analysis(X : pd.DataFrame, y : pd.Series) -> None:
     for max_depth, mean_boost, std_boost, rmse_boost in results:
         print(f"{max_depth:<10} | {mean_boost:.4f} | {std_boost:.4f} | {rmse_boost:.4f}")
 
-weak_learner_analysis(X, y)
+#weak_learner_analysis(X, y)
+
+def feature_importance_analysis(X : pd.DataFrame, y : pd.Series) -> None:
+    model_boost = build_boost()
+    model_boost.fit(X, y)
+    importances = model_boost.feature_importances_
+    feature_importance = pd.Series(importances, index=X.columns).sort_values(ascending=False)
+    plt.figure(figsize=(8,5))
+    feature_importance.plot(kind="bar")
+    plt.title("Feature Importance - Gradient Boosting")
+    plt.xlabel("Features")
+    plt.ylabel("Importance")
+    plt.tight_layout()
+    plt.savefig("reports/boosting_feature_importance.png", dpi=300)
+    plt.show()
+
+feature_importance_analysis(X, y)
