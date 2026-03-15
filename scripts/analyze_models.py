@@ -83,4 +83,22 @@ def n_estimators_experiment(X : pd.DataFrame, y : pd.Series) -> None:
     for n, mean_boost, std_boost, rmse_boost in results:
         print(f"{n:<13} | {mean_boost:.4f} | {std_boost:.4f} | {rmse_boost:.4f}")
 
-n_estimators_experiment(X, y)
+#n_estimators_experiment(X, y)
+
+def weak_learner_analysis(X : pd.DataFrame, y : pd.Series) -> None:
+    max_depth_list = [1, 2, 3, 4, 5, 6]
+    results = []
+    for max_depth in max_depth_list:
+        model_boost = build_boost(n_estimators=100, learning_rate=0.05, max_depth=max_depth)
+        scores_boost = cross_val_score(model_boost, X, y, cv=5, scoring="r2")
+        mean_boost = scores_boost.mean()
+        rmse_boost = sqrt(mean_squared_error(y, cross_val_predict(model_boost, X, y, cv=5)))
+        std_boost = scores_boost.std()
+        results.append((max_depth, mean_boost, std_boost, rmse_boost))
+
+    print("Weak Learner Analysis Results:")
+    print("Max Depth | Mean R² | Std R² | RMSE")
+    for max_depth, mean_boost, std_boost, rmse_boost in results:
+        print(f"{max_depth:<10} | {mean_boost:.4f} | {std_boost:.4f} | {rmse_boost:.4f}")
+
+weak_learner_analysis(X, y)
